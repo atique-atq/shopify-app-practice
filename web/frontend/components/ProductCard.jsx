@@ -10,9 +10,10 @@ import { useState, useCallback } from "react";
 import { useAuthenticatedFetch } from "../hooks";
 import { Variants } from "./Variants";
 import { useNavigate, Toast } from "@shopify/app-bridge-react";
+import { useAppQuery } from "../hooks";
 
 export const ProductCard = (props) => {
-  console.log("Props are here: ", props);
+  console.log("Props are here: ", props.legacyId);
   const [title, setTitle] = useState(props.title);
   const [description, setDescription] = useState(props.description);
   const [showVariants, setShowVariants] = useState(false);
@@ -52,6 +53,36 @@ export const ProductCard = (props) => {
     }
 
     setIsUpdating(false);
+  };
+
+  const getMetaField = async () => {
+    console.log("Calling to server from frontend///////");
+
+    // const { data, isLoading, refetch, isRefetching } = useAppQuery({
+    //   url: `/api/product/metafields/${props.legacyId}`,
+    // });
+    // const header = {
+    //   method: "GET",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    // };
+    const response = await fetch(`/api/product/metafields/${props.legacyId}`);
+
+    // const config = {
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    // };
+
+    // const response = await axios.get(
+    //   `https://3c4caed6dca4f54ac57d665bed6ebf30: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@atique-atq1.myshopify.com/admin/api/2023-04/products/8290811085096/metafields.json`,
+    //   config
+    // );
+    const metaFields = await response.json();
+    console.log("meta response is : ", metaFields);
   };
 
   const updateVariant = (id, price) => {
@@ -111,6 +142,8 @@ export const ProductCard = (props) => {
               <Button onClick={() => setShowVariants((prev) => !prev)}>
                 Show Variants
               </Button>
+
+              <Button onClick={() => getMetaField()}>Show Metafield</Button>
 
               <Collapsible open={showVariants}>
                 <Variants

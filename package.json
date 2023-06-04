@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "@shopify/app": "3.23.0",
-    "@shopify/cli": "3.23.0"
+    "@shopify/cli": "3.23.0",
+    "axios": "^1.4.0",
+    "shopify-api-node": "^3.12.5"
   },
   "author": "alexabbott"
 }

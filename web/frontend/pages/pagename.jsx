@@ -34,7 +34,7 @@ export default function PageName() {
         </Layout.Section>
         <Layout.Section secondary>
           <Card sectioned>
-            <Heading>Heading</Heading>
+            <Heading>Heading 2</Heading>
             <TextContainer>
               <p>Body</p>
             </TextContainer>
