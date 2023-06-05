@@ -166,16 +166,21 @@ export async function createServer(
       res,
       app.get("use-online-tokens")
     );
-
-    const { Metafield } = await import(
-      `@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`
-    );
-
-    const metafields = await Metafield.all({ session,  metafield: {"owner_id": req?.params?.product_id, "owner_resource": "product"} });
-    console.log('results are: ******', metafields);
-    console.log('complted are: ------');
-    res.status(200).send(metafields);
-
+    let status = 200;
+    let error = null;
+    
+    try{
+      const { Metafield } = await import(`@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`);
+      const metafields = await Metafield.all({ session,  
+        metafield: {"owner_id": req?.params?.product_id, "owner_resource": "product"}
+      });
+      console.log('results are: ******', metafields);
+      res.status(status).send({metafields});
+    }
+    catch(e){
+      console.log(`Sorry, Failed to fetch metafields: ${e.message}`);
+       res.status(500).send(e.message);
+    }
   });
 
   // All endpoints after this point will have access to a request.body
@@ -202,7 +207,6 @@ export async function createServer(
   });
 
   app.post("/api/product/metafield/create", async(req, res) => {
-    console.log('Came in Metafield Creation');
     const session = await Shopify.Utils.loadCurrentSession(
       req,
       res,
