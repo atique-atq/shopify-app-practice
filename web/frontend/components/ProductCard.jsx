@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonGroup,
   Card,
   Collapsible,
   FormLayout,
@@ -11,12 +12,15 @@ import { useAuthenticatedFetch } from "../hooks";
 import { Variants } from "./Variants";
 import { useNavigate, Toast } from "@shopify/app-bridge-react";
 import { useAppQuery } from "../hooks";
+import { CreateMetaField } from "./CreateMetaField";
 
 export const ProductCard = (props) => {
   console.log("Props are here: ", props.legacyId);
   const [title, setTitle] = useState(props.title);
   const [description, setDescription] = useState(props.description);
   const [showVariants, setShowVariants] = useState(false);
+  const [showMetafields, setShowMetafields] = useState(false);
+  const [showCreateMetafield, setShowCreateMetafield] = useState(false);
   const [variants, setVariants] = useState(props.variants);
   const [showToast, setShowToast] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -57,32 +61,15 @@ export const ProductCard = (props) => {
 
   const getMetaField = async () => {
     console.log("Calling to server from frontend///////");
-
-    // const { data, isLoading, refetch, isRefetching } = useAppQuery({
-    //   url: `/api/product/metafields/${props.legacyId}`,
-    // });
-    // const header = {
-    //   method: "GET",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //   },
-    // };
     const response = await fetch(`/api/product/metafields/${props.legacyId}`);
-
-    // const config = {
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //   },
-    // };
-
-    // const response = await axios.get(
-    //   `https://3c4caed6dca4f54ac57d665bed6ebf30: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@atique-atq1.myshopify.com/admin/api/2023-04/products/8290811085096/metafields.json`,
-    //   config
-    // );
     const metaFields = await response.json();
     console.log("meta response is : ", metaFields);
+  };
+
+  const createMetaField = async () => {
+    setShowVariants(false);
+    setShowMetafields(false);
+    setShowCreateMetafield(true);
   };
 
   const updateVariant = (id, price) => {
@@ -139,11 +126,15 @@ export const ProductCard = (props) => {
                 disabled={isUpdating}
               ></TextField>
 
-              <Button onClick={() => setShowVariants((prev) => !prev)}>
-                Show Variants
-              </Button>
-
-              <Button onClick={() => getMetaField()}>Show Metafield</Button>
+              <Stack alignment="center" distribution="between">
+                <Button onClick={() => setShowVariants((prev) => !prev)}>
+                  Show Variants
+                </Button>
+                <Button onClick={() => getMetaField()}>Show Metafield</Button>
+                <Button onClick={() => createMetaField()}>
+                  Create Metafield
+                </Button>
+              </Stack>
 
               <Collapsible open={showVariants}>
                 <Variants
@@ -151,6 +142,10 @@ export const ProductCard = (props) => {
                   updateVariant={updateVariant}
                   isUpdating={isUpdating}
                 />
+              </Collapsible>
+
+              <Collapsible open={showCreateMetafield}>
+                <CreateMetaField />
               </Collapsible>
             </FormLayout>
           </Stack.Item>
