@@ -158,7 +158,7 @@ export async function createServer(
     res.status(status).send({ success: status === 200, error });
   });
 
-    // get metafields of a specific products
+  // get metafields of a specific products
   app.get("/api/product/metafields/:product_id", async (req, res) => {
     console.log('Came in server for metafield!!!!!!!')
     const session = await Shopify.Utils.loadCurrentSession(
@@ -176,26 +176,6 @@ export async function createServer(
     console.log('complted are: ------');
     res.status(200).send(metafields);
 
-    // try {
-    //   const response = await axios.get(
-    //   `https://3c4caed6dca4f54ac57d665bed6ebf30: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@atique-atq1.myshopify.com/admin/api/2023-04/products/${req.params.product_id}/metafields.json`,
-    //     {
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         "X-Shopify-Access-Token": "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",
-    //         "Accept-Encoding": "gzip,deflate,compress",
-    //       }
-    //     },
-    //   );
-
-    //   console.log("Call kora shesh server theke!!!!", response.data);
-    //   res.status(status).send(response.data);
-    // } catch (e) {
-    //   console.log(`Failed to fetch metadata: ${e.message}`);
-    //   status = 500;
-    //   error = e.message;
-    //       res.status(status).send(error);
-    // }
   });
 
   // All endpoints after this point will have access to a request.body
@@ -220,6 +200,37 @@ export async function createServer(
     }
     res.status(status).send({ success: status === 200, error });
   });
+
+  app.post("/api/product/metafield/create", async(req, res) => {
+    console.log('Came in Metafield Creation');
+    const session = await Shopify.Utils.loadCurrentSession(
+      req,
+      res,
+      app.get("use-online-tokens")
+    );
+
+    let status = 200;
+    let error = null;
+
+    try {
+      const { Metafield } = await import(`@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`);
+      const metafield = new Metafield({session});
+      const reqBody =req.body
+      console.log('request body is--', reqBody);
+      metafield.product_id = reqBody.productId;
+      metafield.namespace = reqBody.namespace;
+      metafield.key = reqBody.key;
+      metafield.value = reqBody.value;
+      metafield.type = reqBody.type;
+      await metafield.save({ update: true });
+    } 
+    catch (e) {
+      console.log(`Failed to Create Metafield: ${e.message}`);
+      status = 500;
+      error = e.message;
+    }
+    res.status(status).send({ success: status === 200, error });
+  })
 
   app.use((req, res, next) => {
     const shop = Shopify.Utils.sanitizeShop(req.query.shop);

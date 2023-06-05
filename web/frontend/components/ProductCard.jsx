@@ -145,7 +145,7 @@ export const ProductCard = (props) => {
               </Collapsible>
 
               <Collapsible open={showCreateMetafield}>
-                <CreateMetaField />
+                <CreateMetaField productId={props.legacyId} />
               </Collapsible>
             </FormLayout>
           </Stack.Item>
