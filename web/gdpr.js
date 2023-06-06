@@ -1,4 +1,5 @@
 import { Shopify } from "@shopify/shopify-api";
+import fetch from 'node-fetch';
 
 export function setupGDPRWebHooks(path) {
   /**
@@ -75,6 +76,20 @@ export function setupGDPRWebHooks(path) {
       //   "shop_id": 954889,
       //   "shop_domain": "{shop}.myshopify.com"
       // }
+    },
+  });
+
+  // product update 
+  Shopify.Webhooks.Registry.addHandler("PRODUCTS_UPDATE", {
+    path,
+    webhookHandler: async (topic, shop, body) => {
+      const payload = JSON.parse(body);
+      console.log('**********Product Updated********** :',payload );
+
+      const { id: productId } = payload;
+      
+      const response = await fetch(`/api/products`);
+
     },
   });
 }

@@ -74,25 +74,6 @@ export const ProductList = ({ data, isLoading, isRefetching }) => {
           <ProductCard {...selectedProduct}></ProductCard>
         </Layout.Section>
       )}
-
-      {/* {data?.products.length ? (
-        data.products.map((product) => (
-          <Layout.Section key={product.id}>
-            <ProductCard {...product}></ProductCard>
-          </Layout.Section>
-        ))
-      ) : (
-        <Layout.Section>
-          <Card>
-            <EmptyState
-              heading="No Products Found"
-              image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
-            >
-              <p>Add products using the card above</p>
-            </EmptyState>
-          </Card>
-        </Layout.Section>
-      )} */}
     </Layout>
   );
 };

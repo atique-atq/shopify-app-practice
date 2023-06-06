@@ -25,7 +25,7 @@ export default async function productUpdater(
   { id, description, title, variants }
 ) {
   const client = new Shopify.Clients.Graphql(session.shop, session.accessToken);
-
+  console.log('Came to update product');
   try {
     await client.query({
       data: {

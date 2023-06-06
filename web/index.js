@@ -105,6 +105,7 @@ export async function createServer(
     }
   });
 
+
   // All endpoints after this point will require an active session
   app.use(
     "/api/*",
@@ -174,7 +175,6 @@ export async function createServer(
       const metafields = await Metafield.all({ session,  
         metafield: {"owner_id": req?.params?.product_id, "owner_resource": "product"}
       });
-      console.log('results are: ******', metafields);
       res.status(status).send({metafields});
     }
     catch(e){
@@ -193,6 +193,7 @@ export async function createServer(
       res,
       app.get("use-online-tokens")
     );
+    console.log('Came Here');
     let status = 200;
     let error = null;
 
@@ -220,7 +221,6 @@ export async function createServer(
       const { Metafield } = await import(`@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`);
       const metafield = new Metafield({session});
       const reqBody =req.body
-      console.log('request body is--', reqBody);
       metafield.product_id = reqBody.productId;
       metafield.namespace = reqBody.namespace;
       metafield.key = reqBody.key;
